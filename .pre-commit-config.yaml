@@ -19,7 +19,6 @@ repos:
         args: [
           '--application-directories', '.:src',
           '--py39-plus',
-          '--add-import', 'from __future__ import annotations'
         ]
   - repo: 'https://github.com/PyCQA/flake8'
     rev: 6.0.0
