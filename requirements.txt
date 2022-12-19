@@ -1,3 +1,5 @@
+deta
 fastapi
 fastapi-utils
-deta
+jinja2
+pydantic
