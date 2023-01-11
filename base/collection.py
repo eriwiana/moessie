@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from deta import Deta
 
@@ -12,7 +13,7 @@ class BaseCollection:
     def create(self, body: dict):
         return self.base.put(body)
 
-    def list(self, query: dict = None, order_by: str = "-key"):
+    def list(self, query: Optional[dict] = None, order_by: str = "-key"):
         return sorted(
             self.base.fetch(query).items,
             key=lambda i: i.get(order_by.split("-")[1]),
