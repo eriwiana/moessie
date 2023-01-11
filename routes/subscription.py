@@ -1,17 +1,28 @@
 from http import HTTPStatus
 
-from fastapi_utils.cbv import cbv
-from fastapi_utils.inferring_router import InferringRouter
+from fastapi import Request
+from fastapi.responses import HTMLResponse
+from fastapi_restful.cbv import cbv
+from fastapi_restful.inferring_router import InferringRouter
 
 from base.collection import BaseCollection
+from base.views import BaseTemplateView
 
 
 router = InferringRouter()
 
 
 @cbv(router)
-class SubscriptionView:
+class SubscriptionView(BaseTemplateView):
     base = BaseCollection("subscription")
+
+    @router.get("/subscriptions", response_class=HTMLResponse)
+    def get(self, request: Request):
+        """Subscription List Template View"""
+
+        return super(SubscriptionView, self).list(
+            request=request, data=self.base.list()
+        )
 
     @router.post("/api/subscription", status_code=HTTPStatus.CREATED)
     def post(self, body: dict):
