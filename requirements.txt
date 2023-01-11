@@ -1,5 +1,5 @@
 deta
 fastapi
-fastapi-utils
+fastapi-restful
 jinja2
 pydantic
