@@ -2,4 +2,4 @@ deta
 fastapi
 fastapi-restful
 jinja2
-pydantic
+pydantic[dotenv]
