@@ -1,45 +1,53 @@
 from http import HTTPStatus
 
 from fastapi import Request
+from fastapi import Response
 from fastapi.responses import HTMLResponse
 from fastapi_restful.cbv import cbv
 from fastapi_restful.inferring_router import InferringRouter
 
-from base.collection import BaseCollection
-from base.views import BaseTemplateView
+from base import deta
+from base import settings
+from base.views import BaseView
+from models.subscription import SubscriptionCreate
+from models.subscription import SubscriptionUpdate
 
 
 router = InferringRouter()
 
 
 @cbv(router)
-class SubscriptionView(BaseTemplateView):
-    base = BaseCollection("subscription")
+class SubscriptionView(BaseView):
+    base = deta.Base(settings.base_subscriptions_name)
 
     @router.get("/subscriptions", response_class=HTMLResponse)
     def get(self, request: Request):
         """Subscription List Template View"""
 
-        return super(SubscriptionView, self).list(
-            request=request, data=self.base.list()
-        )
+        return self.list(request=request)
+
+    @router.get("/api/subscription/{key}")
+    def detail(self, key, response: Response):
+        """Subscription Detail API View"""
+
+        return self.retrieve(key, response)
 
     @router.post("/api/subscription", status_code=HTTPStatus.CREATED)
-    def post(self, body: dict):
-        """Subscription API Create View"""
+    def post(self, data: SubscriptionCreate, response: Response):
+        """Subscription Create API View"""
 
-        return self.base.create(body)
+        return self.create(data, response)
 
     @router.delete(
         "/api/subscription/{key}", status_code=HTTPStatus.NO_CONTENT
     )
     def delete(self, key: str):
-        """Subscription API Delete View"""
+        """Subscription Delete API View"""
 
         return self.base.delete(key)
 
     @router.patch("/api/subscription/{key}")
-    def patch(self, key: str, body: dict):
-        """Subscription API Update View"""
+    def patch(self, key: str, data: SubscriptionUpdate, response: Response):
+        """Subscription Update API View"""
 
-        return self.base.patch(key, body)
+        return self.update(key, data, response)
