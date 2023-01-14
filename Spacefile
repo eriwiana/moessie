@@ -1,0 +1,28 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+app_name: "Moessie"
+micros:
+    - name: moessie
+      src: .
+      engine: python3.9
+      primary: true
+      presets:
+        env:
+          - name: BASE_SUBSCRIPTIONS_NAME
+            description: Base Name for Subscription
+            default: "subscription"
+          - name: BASE_MEMBERS_NAME
+            description: Base Name for Member
+            default: "member"
+          - name: STATIC_PATH
+            description: Static files path
+            default: "/static"
+          - name: STATIC_DIR
+            description: Static files directory
+            default: "dashboard/static"
+          - name: STATIC_NAME
+            description: Static mount's name
+            default: "static"
+          - name: TEMPLATES_DIR
+            description: Templates directory
+            default: "dashboard/templates"
