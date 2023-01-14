@@ -448,6 +448,7 @@ optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
+python-dotenv = {version = ">=0.10.4", optional = true, markers = "extra == \"dotenv\""}
 typing-extensions = ">=4.2.0"
 
 [package.extras]
@@ -472,6 +473,17 @@ python-versions = ">=3.6"
 
 [package.extras]
 plugins = ["importlib-metadata"]
+
+[[package]]
+name = "python-dotenv"
+version = "0.21.0"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+cli = ["click (>=5.0)"]
 
 [[package]]
 name = "pyyaml"
@@ -599,7 +611,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9.13"
-content-hash = "1a4b2909e525e744e045f68285da52b734c1f6ecd6d8d55a748d91e7a4cba189"
+content-hash = "fe9b3c4c74a3b0a83dc98f2ce91266807ecd8c1e1d0ee9ac27f65927c8e43abe"
 
 [metadata.files]
 anyio = []
@@ -676,6 +688,7 @@ pycodestyle = []
 pydantic = []
 pyflakes = []
 pygments = []
+python-dotenv = []
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},
     {file = "PyYAML-6.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9df7ed3b3d2e0ecfe09e14741b857df43adb5a3ddadc919a2d94fbdf78fea53c"},
