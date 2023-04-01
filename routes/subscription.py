@@ -20,7 +20,7 @@ router = InferringRouter()
 class SubscriptionView(BaseView):
     base = deta.Base(settings.base_subscriptions_name)
 
-    @router.get("/subscriptions", response_class=HTMLResponse)
+    @router.get("/", response_class=HTMLResponse)
     def get(self, request: Request):
         """Subscription List Template View"""
 
