@@ -1,10 +1,39 @@
 import json
+from collections import namedtuple
+from datetime import datetime
 from http import HTTPStatus
 from typing import Optional
 
 from fastapi.templating import Jinja2Templates
 
 from base import settings
+from models.subscription import BillingEnum
+
+
+def next_payment(values):
+    SUBSCRIPTION = namedtuple("Subscription", (k for k in values.keys()))
+    data = SUBSCRIPTION(**values)
+
+    dt = datetime.now()
+    renewal_date = datetime.strptime(data.renewal_date, "%Y-%m-%dT%H:%M:%S")
+
+    _month = dt.month if renewal_date.day >= dt.day else dt.month + 1
+
+    if data.billing == BillingEnum.monthly:
+        return datetime(dt.year, _month, renewal_date.day).strftime(
+            "%B %d, %Y"
+        )
+
+    _year = (
+        dt.year
+        if renewal_date.day >= dt.day and renewal_date.month <= dt.month
+        else dt.year + 1
+    )
+    return datetime(_year, _month, renewal_date.day).strftime("%B %d, %Y")
+
+
+def format_currency(value):
+    return f"{value:,}"
 
 
 class BaseView:
@@ -15,6 +44,9 @@ class BaseView:
     def __init__(self):
         if not self.base:
             raise Exception("Base View `base` can not be empty!")
+
+        self.templates.env.filters["next_payment"] = next_payment
+        self.templates.env.filters["format_currency"] = format_currency
 
     def list(
         self, request, query: Optional[dict] = None, order_by: str = "-key"
