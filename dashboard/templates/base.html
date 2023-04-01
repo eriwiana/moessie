@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% block head %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+
+  {% endblock head %}
+
+  <title>{% block title %}Home{% endblock %} | Moessie</title>
+</head>
+
+<body>
+  <div class="container is-max-desktop">
+    {% block contents %}{% endblock contents %}
+  </div>
+</body>
+
+</html>

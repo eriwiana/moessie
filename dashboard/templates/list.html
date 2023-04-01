@@ -1,13 +1,35 @@
-<html>
-<head>
-    <title>Item Details</title>
-    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
-</head>
-<body>
-    <ul>
-      {% for d in data %}
-        <li>{{ d }}</li>
-      {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block contents %}
+<div class="columns is-multiline">
+  {% for d in data %}
+  <div class="column is-4">
+    <div class="card">
+      <div class="card-content">
+        <div class="content">
+          <h4 class="title is-4">{{d.name}}</h4>
+          <div class="field is-grouped is-grouped-multiline subtitle">
+            <div class="control">
+              <div class="tags has-addons">
+                <span class="tag is-dark">{{d.price|format_currency}}</span>
+                <span class="tag {% if d.billing == 'monthly' %}is-warning{% else %}is-info{% endif %}">
+                  {{d.billing[0]|upper}}{{d.billing[1:]}}
+                </span>
+              </div>
+            </div>
+            <div class="control">
+              <div class="tags">
+                <span class="tag {% if d.billing == 'monthly' %}is-warning{% else %}is-info{% endif %}">
+                  {{d|next_payment}}
+                </span>
+              </div>
+            </div>
+          </div>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock contents %}
