@@ -21,12 +21,17 @@ class SubscriptionView(BaseView):
     base = deta.Base(settings.base_subscriptions_name)
 
     @router.get("/api/subscription", response_model=list[SubscriptionDetail])
-    def get(self, request: Request, response: Response):
-        """Subscription List Template View"""
+    def get(self, request: Request, response: Response, active: bool = True):
+        """Subscription List API View"""
 
-        return self.list(request=request, response=response)
+        query = None
+        if request.query_params:
+            query = dict(request.query_params)
+            query["active"] = active
 
-    @router.get("/api/subscription/{key}")
+        return self.list(request=request, response=response, query=query)
+
+    @router.get("/api/subscription/{key}", response_model=SubscriptionDetail)
     def detail(self, key, response: Response):
         """Subscription Detail API View"""
 
@@ -46,7 +51,7 @@ class SubscriptionView(BaseView):
 
         return self.base.delete(key)
 
-    @router.patch("/api/subscription/{key}")
+    @router.patch("/api/subscription/{key}", response_model=SubscriptionDetail)
     def patch(self, key: str, data: SubscriptionUpdate, response: Response):
         """Subscription Update API View"""
 
