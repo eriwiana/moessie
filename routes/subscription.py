@@ -21,7 +21,14 @@ class SubscriptionView(BaseView):
     base = deta.Base(settings.base_subscriptions_name)
 
     @router.get("/api/subscription", response_model=list[SubscriptionDetail])
-    def get(self, request: Request, response: Response, active: bool = True):
+    def get(
+        self,
+        request: Request,
+        response: Response,
+        active: bool = True,
+        limit: int = 10,
+        last: str = None,
+    ):
         """Subscription List API View"""
 
         query = None
@@ -29,7 +36,13 @@ class SubscriptionView(BaseView):
             query = dict(request.query_params)
             query["active"] = active
 
-        return self.list(request=request, response=response, query=query)
+        return self.list(
+            request=request,
+            response=response,
+            query=query,
+            limit=limit,
+            last=last,
+        )
 
     @router.get("/api/subscription/{key}", response_model=SubscriptionDetail)
     def detail(self, key, response: Response):

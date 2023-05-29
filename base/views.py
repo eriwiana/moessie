@@ -45,13 +45,15 @@ class BaseView:
         request,
         response,
         query: Optional[dict] = None,
+        limit: int = 10,
+        last: str = None,
         order_by: str = "-key",
     ) -> list[dict]:
         """Base List API View"""
 
         try:
             return sorted(
-                self.base.fetch(query).items,
+                self.base.fetch(query=query, limit=limit, last=last).items,
                 key=lambda i: i.get(order_by.split("-")[1]),
                 reverse="-" in order_by,
             )
