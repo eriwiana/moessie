@@ -52,9 +52,14 @@ class BaseView:
         """Base List API View"""
 
         try:
+            # Remove unnecessary attributes in query
+            for k in ["limit", "last", "order_by"]:
+                if k in query:
+                    del query[k]
+
             return sorted(
                 self.base.fetch(query=query, limit=limit, last=last).items,
-                key=lambda i: i.get(order_by.split("-")[1]),
+                key=lambda i: i.get(order_by.replace("-", "")),
                 reverse="-" in order_by,
             )
         except Exception as err:
