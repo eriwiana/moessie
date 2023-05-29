@@ -28,6 +28,7 @@ class SubscriptionView(BaseView):
         active: bool = True,
         limit: int = 10,
         last: str = None,
+        order_by: str = "-key",
     ):
         """Subscription List API View"""
 
@@ -42,6 +43,7 @@ class SubscriptionView(BaseView):
             query=query,
             limit=limit,
             last=last,
+            order_by=order_by,
         )
 
     @router.get("/api/subscription/{key}", response_model=SubscriptionDetail)
