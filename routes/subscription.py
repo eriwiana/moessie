@@ -2,7 +2,6 @@ from http import HTTPStatus
 
 from fastapi import Request
 from fastapi import Response
-from fastapi.responses import HTMLResponse
 from fastapi_restful.cbv import cbv
 from fastapi_restful.inferring_router import InferringRouter
 
@@ -10,6 +9,7 @@ from base import deta
 from base import settings
 from base.views import BaseView
 from models.subscription import SubscriptionCreate
+from models.subscription import SubscriptionDetail
 from models.subscription import SubscriptionUpdate
 
 
@@ -20,11 +20,11 @@ router = InferringRouter()
 class SubscriptionView(BaseView):
     base = deta.Base(settings.base_subscriptions_name)
 
-    @router.get("/", response_class=HTMLResponse)
-    def get(self, request: Request):
+    @router.get("/api/subscription", response_model=list[SubscriptionDetail])
+    def get(self, request: Request, response: Response):
         """Subscription List Template View"""
 
-        return self.list(request=request)
+        return self.list(request=request, response=response)
 
     @router.get("/api/subscription/{key}")
     def detail(self, key, response: Response):
