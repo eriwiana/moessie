@@ -4,6 +4,8 @@ from datetime import datetime
 from http import HTTPStatus
 from typing import Optional
 
+from fastapi.responses import JSONResponse
+
 from models.subscription import BillingEnum
 
 
@@ -43,7 +45,6 @@ class BaseView:
     def list(
         self,
         request,
-        response,
         query: Optional[dict] = None,
         limit: int = 10,
         last: str = None,
@@ -63,44 +64,53 @@ class BaseView:
                 reverse="-" in order_by,
             )
         except Exception as err:
-            response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
-            return {"message": str(err)}
+            return JSONResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                content={"message": str(err)},
+            )
 
-    def retrieve(self, key, response) -> dict:
+    def retrieve(self, key) -> dict:
         """Base Detail API View"""
 
         try:
             data = self.base.get(key)
 
             if not data:
-                response.status_code = HTTPStatus.NOT_FOUND
-                return {"message": "Not found."}
-
+                return JSONResponse(
+                    status_code=HTTPStatus.NOT_FOUND,
+                    content={"message": "Not found."},
+                )
             return data
         except Exception as err:
-            response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
-            return {"message": str(err)}
+            return JSONResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                content={"message": str(err)},
+            )
 
-    def create(self, data, response) -> dict:
+    def create(self, data) -> dict:
         """Base Create API View"""
 
         try:
             return self.base.put(json.loads(data.json()))
         except Exception as err:
-            response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
-            return {"message": str(err)}
+            return JSONResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                content={"message": str(err)},
+            )
 
-    def update(self, key: str, data, response) -> dict:
+    def update(self, key: str, data) -> dict:
         """Base Update API View"""
 
         try:
             self.base.update(json.loads(data.json(exclude_none=True)), key)
             return self.base.get(key)
         except Exception as err:
-            response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+            status_code = HTTPStatus.INTERNAL_SERVER_ERROR
 
             # Set response status code if error key is not found.
             if "not found" in str(err):
-                response.status_code = HTTPStatus.NOT_FOUND
+                status_code = HTTPStatus.NOT_FOUND
 
-            return {"message": str(err)}
+            return JSONResponse(
+                status_code=status_code, content={"message": str(err)}
+            )

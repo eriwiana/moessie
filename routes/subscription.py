@@ -1,12 +1,12 @@
 from http import HTTPStatus
 
 from fastapi import Request
-from fastapi import Response
 from fastapi_restful.cbv import cbv
 from fastapi_restful.inferring_router import InferringRouter
 
 from base import deta
 from base import settings
+from base.messages import BaseMessage
 from base.views import BaseView
 from models.subscription import SubscriptionCreate
 from models.subscription import SubscriptionDetail
@@ -20,11 +20,14 @@ router = InferringRouter()
 class SubscriptionView(BaseView):
     base = deta.Base(settings.base_subscriptions_name)
 
-    @router.get("/api/subscription", response_model=list[SubscriptionDetail])
+    @router.get(
+        "/api/subscription",
+        response_model=list[SubscriptionDetail],
+        responses={HTTPStatus.INTERNAL_SERVER_ERROR: {"model": BaseMessage}},
+    )
     def get(
         self,
         request: Request,
-        response: Response,
         active: bool = True,
         limit: int = 10,
         last: str = None,
@@ -32,31 +35,44 @@ class SubscriptionView(BaseView):
     ):
         """Subscription List API View"""
 
-        query = None
+        query = {}
         if request.query_params:
             query = dict(request.query_params)
             query["active"] = active
 
         return self.list(
             request=request,
-            response=response,
             query=query,
             limit=limit,
             last=last,
             order_by=order_by,
         )
 
-    @router.get("/api/subscription/{key}", response_model=SubscriptionDetail)
-    def detail(self, key, response: Response):
+    @router.get(
+        "/api/subscription/{key}",
+        response_model=SubscriptionDetail,
+        responses={
+            HTTPStatus.NOT_FOUND: {"model": BaseMessage},
+            HTTPStatus.INTERNAL_SERVER_ERROR: {"model": BaseMessage},
+        },
+    )
+    def detail(self, key):
         """Subscription Detail API View"""
 
-        return self.retrieve(key, response)
+        return self.retrieve(key)
 
-    @router.post("/api/subscription", status_code=HTTPStatus.CREATED)
-    def post(self, data: SubscriptionCreate, response: Response):
+    @router.post(
+        "/api/subscription",
+        status_code=HTTPStatus.CREATED,
+        response_model=SubscriptionDetail,
+        responses={
+            HTTPStatus.INTERNAL_SERVER_ERROR: {"model": BaseMessage},
+        },
+    )
+    def post(self, data: SubscriptionCreate):
         """Subscription Create API View"""
 
-        return self.create(data, response)
+        return self.create(data)
 
     @router.delete(
         "/api/subscription/{key}", status_code=HTTPStatus.NO_CONTENT
@@ -66,8 +82,15 @@ class SubscriptionView(BaseView):
 
         return self.base.delete(key)
 
-    @router.patch("/api/subscription/{key}", response_model=SubscriptionDetail)
-    def patch(self, key: str, data: SubscriptionUpdate, response: Response):
+    @router.patch(
+        "/api/subscription/{key}",
+        response_model=SubscriptionDetail,
+        responses={
+            HTTPStatus.NOT_FOUND: {"model": BaseMessage},
+            HTTPStatus.INTERNAL_SERVER_ERROR: {"model": BaseMessage},
+        },
+    )
+    def patch(self, key: str, data: SubscriptionUpdate):
         """Subscription Update API View"""
 
-        return self.update(key, data, response)
+        return self.update(key, data)
