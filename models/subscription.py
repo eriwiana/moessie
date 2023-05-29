@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
-from typing import Optional, List
+from typing import List
+from typing import Optional
 
 from pydantic import BaseModel
 from pydantic import Field
@@ -32,3 +33,14 @@ class SubscriptionUpdate(BaseModel):
     member_limit: Optional[int] = Field(default=1, le=6)
     members: Optional[List[str]] = Field(default=[], min_items=0, max_items=6)
     modified: datetime = Field(default_factory=datetime.now)
+
+
+class SubscriptionDetail(BaseModel):
+    key: str
+    name: str
+    price: float
+    billing: BillingEnum
+    active: bool
+    renewal_date: datetime
+    member_limit: int
+    members: Optional[List[str]]
