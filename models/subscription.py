@@ -18,6 +18,7 @@ class SubscriptionCreate(BaseModel):
     billing: BillingEnum = BillingEnum.monthly
     active: bool = Field(default=True)
     renewal_date: datetime = Field(default_factory=datetime.now)
+    last_subscribed_date: datetime = Field(default=None)
     member_limit: int = Field(default=1, le=6)
     members: List[str] = Field(default=[], min_items=0, max_items=6)
     created: datetime = Field(default_factory=datetime.now)
@@ -30,6 +31,7 @@ class SubscriptionUpdate(BaseModel):
     billing: Optional[BillingEnum] = Field(default=None)
     active: Optional[bool] = Field(default=None)
     renewal_date: Optional[datetime] = Field(default=None)
+    last_subscribed_date: Optional[datetime] = Field(default=None)
     member_limit: Optional[int] = Field(default=1, le=6)
     members: Optional[List[str]] = Field(default=[], min_items=0, max_items=6)
     modified: datetime = Field(default_factory=datetime.now)
@@ -42,5 +44,8 @@ class SubscriptionDetail(BaseModel):
     billing: BillingEnum
     active: bool
     renewal_date: datetime
+    last_subscribed_date: Optional[datetime]
     member_limit: int
     members: Optional[List[str]]
+    created: datetime
+    modified: datetime
