@@ -7,6 +7,7 @@ micros:
       engine: python3.9
       primary: true
       presets:
+        api_keys: true
         env:
           - name: BASE_SUBSCRIPTIONS_NAME
             description: Base Name for Subscription
