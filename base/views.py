@@ -4,9 +4,6 @@ from datetime import datetime
 from http import HTTPStatus
 from typing import Optional
 
-from fastapi.templating import Jinja2Templates
-
-from base import settings
 from models.subscription import BillingEnum
 
 
@@ -38,33 +35,33 @@ def format_currency(value):
 
 class BaseView:
     base = None
-    templates = Jinja2Templates(directory=settings.templates_dir)
-    list_templates = "list.html"
 
     def __init__(self):
         if not self.base:
             raise Exception("Base View `base` can not be empty!")
 
-        self.templates.env.filters["next_payment"] = next_payment
-        self.templates.env.filters["format_currency"] = format_currency
-
     def list(
-        self, request, query: Optional[dict] = None, order_by: str = "-key"
-    ) -> Jinja2Templates.TemplateResponse:
-        """Base List Template View"""
+        self,
+        request,
+        response,
+        query: Optional[dict] = None,
+        order_by: str = "-key",
+    ) -> list[dict]:
+        """Base List API View"""
 
-        data = sorted(
-            self.base.fetch(query).items,
-            key=lambda i: i.get(order_by.split("-")[1]),
-            reverse="-" in order_by,
-        )
-
-        return self.templates.TemplateResponse(
-            name=self.list_templates,
-            context={"request": request, "data": data},
-        )
+        try:
+            return sorted(
+                self.base.fetch(query).items,
+                key=lambda i: i.get(order_by.split("-")[1]),
+                reverse="-" in order_by,
+            )
+        except Exception as err:
+            response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+            return {"message": str(err)}
 
     def retrieve(self, key, response) -> dict:
+        """Base Detail API View"""
+
         try:
             data = self.base.get(key)
 
