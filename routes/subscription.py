@@ -102,14 +102,25 @@ class SubscriptionView(BaseView):
         response_model=SubscriptionDetail,
         responses={
             HTTPStatus.NOT_FOUND: {"model": BaseMessage},
+            HTTPStatus.BAD_REQUEST: {"model": BaseMessage},
             HTTPStatus.INTERNAL_SERVER_ERROR: {"model": BaseMessage},
         },
     )
     def update_member(self, key: str, data: SubscriptionMemberCreate):
         """Update Subscription's Member API View"""
 
-        _data = self.retrieve(key)
-        if isinstance(_data, JSONResponse):
-            return _data
+        subscription_data = self.retrieve(key)
+        if isinstance(subscription_data, JSONResponse):
+            return subscription_data
+
+        # Validate member limit
+        member_limit = subscription_data.get("member_limit")
+        if len(data.members) > member_limit:
+            return JSONResponse(
+                status_code=HTTPStatus.BAD_REQUEST,
+                content={
+                    "message": f"Member Limit is {member_limit} account(s)."
+                },
+            )
 
         return self.update(key, data)
