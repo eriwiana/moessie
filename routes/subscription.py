@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from fastapi import Request
+from fastapi.responses import JSONResponse
 from fastapi_restful.cbv import cbv
 from fastapi_restful.inferring_router import InferringRouter
 
@@ -10,6 +11,7 @@ from base.messages import BaseMessage
 from base.views import BaseView
 from models.subscription import SubscriptionCreate
 from models.subscription import SubscriptionDetail
+from models.subscription import SubscriptionMemberCreate
 from models.subscription import SubscriptionUpdate
 
 
@@ -92,5 +94,22 @@ class SubscriptionView(BaseView):
     )
     def patch(self, key: str, data: SubscriptionUpdate):
         """Subscription Update API View"""
+
+        return self.update(key, data)
+
+    @router.patch(
+        "/api/subscription/{key}/members",
+        response_model=SubscriptionDetail,
+        responses={
+            HTTPStatus.NOT_FOUND: {"model": BaseMessage},
+            HTTPStatus.INTERNAL_SERVER_ERROR: {"model": BaseMessage},
+        },
+    )
+    def update_member(self, key: str, data: SubscriptionMemberCreate):
+        """Add Subscription Member API View"""
+
+        _data = self.retrieve(key)
+        if isinstance(_data, JSONResponse):
+            return _data
 
         return self.update(key, data)

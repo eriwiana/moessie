@@ -32,7 +32,7 @@ class SubscriptionUpdate(BaseModel):
     active: Optional[bool] = Field(default=None)
     renewal_date: Optional[datetime] = Field(default=None)
     last_subscribed_date: Optional[datetime] = Field(default=None)
-    member_limit: Optional[int] = Field(default=1, le=6)
+    member_limit: Optional[int] = Field(default=None, le=6)
     members: Optional[List[str]] = Field(default=[], min_items=0, max_items=6)
     modified: datetime = Field(default_factory=datetime.now)
 
@@ -49,3 +49,7 @@ class SubscriptionDetail(BaseModel):
     members: Optional[List[str]]
     created: datetime
     modified: datetime
+
+
+class SubscriptionMemberCreate(BaseModel):
+    members: List[str] = Field(default=[], min_items=0, max_items=6)
