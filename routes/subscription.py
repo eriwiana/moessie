@@ -106,7 +106,7 @@ class SubscriptionView(BaseView):
         },
     )
     def update_member(self, key: str, data: SubscriptionMemberCreate):
-        """Add Subscription Member API View"""
+        """Update Subscription's Member API View"""
 
         _data = self.retrieve(key)
         if isinstance(_data, JSONResponse):
