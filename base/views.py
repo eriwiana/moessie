@@ -1,4 +1,6 @@
 import json
+import logging
+import traceback
 from collections import namedtuple
 from datetime import datetime
 from http import HTTPStatus
@@ -7,6 +9,15 @@ from typing import Optional
 from fastapi.responses import JSONResponse
 
 from models.subscription import BillingEnum
+
+
+logging.basicConfig(
+    filename="views.log",
+    encoding="utf-8",
+    level=logging.DEBUG,
+    format="%(asctime)s: %(levelname)s:\n%(message)s",
+    datefmt="%d-%m-%Y %H:%M:%S",
+)
 
 
 def next_payment(values):
@@ -63,10 +74,11 @@ class BaseView:
                 key=lambda i: i.get(order_by.replace("-", "")),
                 reverse="-" in order_by,
             )
-        except Exception as err:
+        except Exception:
+            logging.error(traceback.format_exc())
             return JSONResponse(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                content={"message": str(err)},
+                content={"message": "Error when fetch data."},
             )
 
     def retrieve(self, key) -> dict:
@@ -81,10 +93,11 @@ class BaseView:
                     content={"message": "Not found."},
                 )
             return data
-        except Exception as err:
+        except Exception:
+            logging.error(traceback.format_exc())
             return JSONResponse(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                content={"message": str(err)},
+                content={"message": "Error when retrieve data."},
             )
 
     def create(self, data) -> dict:
@@ -92,10 +105,11 @@ class BaseView:
 
         try:
             return self.base.put(json.loads(data.json()))
-        except Exception as err:
+        except Exception:
+            logging.error(traceback.format_exc())
             return JSONResponse(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                content={"message": str(err)},
+                content={"message": "Error when create new data."},
             )
 
     def update(self, key: str, data) -> dict:
@@ -111,6 +125,8 @@ class BaseView:
             if "not found" in str(err):
                 status_code = HTTPStatus.NOT_FOUND
 
+            logging.error(traceback.format_exc())
             return JSONResponse(
-                status_code=status_code, content={"message": str(err)}
+                status_code=status_code,
+                content={"message": "Error when update data."},
             )
