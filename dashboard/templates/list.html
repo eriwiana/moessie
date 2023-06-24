@@ -1,35 +1,35 @@
 {% extends "base.html" %}
 
 {% block contents %}
-<div class="columns is-multiline">
-  {% for d in data %}
-  <div class="column is-4">
-    <div class="card">
-      <div class="card-content">
-        <div class="content">
-          <h4 class="title is-4">{{d.name}}</h4>
-          <div class="field is-grouped is-grouped-multiline subtitle">
-            <div class="control">
-              <div class="tags has-addons">
-                <span class="tag is-dark">{{d.price|format_currency}}</span>
-                <span class="tag {% if d.billing == 'monthly' %}is-warning{% else %}is-info{% endif %}">
-                  {{d.billing[0]|upper}}{{d.billing[1:]}}
-                </span>
-              </div>
-            </div>
-            <div class="control">
-              <div class="tags">
-                <span class="tag {% if d.billing == 'monthly' %}is-warning{% else %}is-info{% endif %}">
-                  {{d|next_payment}}
-                </span>
-              </div>
-            </div>
-          </div>
-          </p>
-        </div>
-      </div>
+{% for d in data %}
+<div class="border-2 border-black rounded-md p-2 shadow-[5px_5px_0px_3px_black] hover:shadow-[3px_3px_0px_1px_black]">
+
+  <div class="grid grid-cols-3 justify-items-stretch">
+    <div class="col-span-2 justify-self-start font-bold ">{{d.name}}</div>
+    <div class="justify-self-end">
+      <span
+        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full {% if d.billing == 'monthly' %}text-sky-600 bg-sky-200{% else %}text-yellow-600 bg-yellow-200{% endif %} uppercase last:mr-0 mr-1">
+        {{d.billing|capitalize}}
+      </span>
     </div>
   </div>
-  {% endfor %}
+
+  <div class="grid grid-cols-2 justify-items-stretch my-2">
+    <div class="justify-self-start">{{d.price|format_currency}}</div>
+    <div class="justify-self-end">
+      {% if d.active %}
+      {{d|next_payment}}
+      {% else %}
+      <span
+        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200 uppercase last:mr-0 mr-1">
+        Cancelled
+      </span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% include 'member.html' %}
+
 </div>
+{% endfor %}
 {% endblock contents %}

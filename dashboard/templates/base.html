@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
 
   {% endblock head %}
@@ -18,8 +18,11 @@
 </head>
 
 <body>
-  <div class="container is-max-desktop">
-    {% block contents %}{% endblock contents %}
+  <div class="container mx-auto w-3/4 p-5">
+    <h1 class="text-center text-xl font-bold">Subscriptions</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-5 h-3/6">
+      {% block contents %}{% endblock contents %}
+    </div>
   </div>
 </body>
 

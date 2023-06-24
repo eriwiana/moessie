@@ -1,0 +1,9 @@
+{% if d.members %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 h-3/6 place-content-center">
+  {% for m in d.members %}
+  <span class="text-xs text-center font-semibold p-1 cursor-pointer rounded-md border border-neutral-400">
+    {{m}}
+  </span>
+  {% endfor %}
+</div>
+{% endif %}
