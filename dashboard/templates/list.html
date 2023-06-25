@@ -2,29 +2,16 @@
 
 {% block contents %}
 {% for d in data %}
-<div class="border-2 border-black rounded-md p-2 shadow-[5px_5px_0px_3px_black] hover:shadow-[3px_3px_0px_1px_black]">
+<div class="border-2 border-black rounded-md p-3 shadow-[3px_3px_0px_1px_black]">
 
-  <div class="grid grid-cols-3 justify-items-stretch">
-    <div class="col-span-2 justify-self-start font-bold ">{{d.name}}</div>
-    <div class="justify-self-end">
-      <span
-        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full {% if d.billing == 'monthly' %}text-sky-600 bg-sky-200{% else %}text-yellow-600 bg-yellow-200{% endif %} uppercase last:mr-0 mr-1">
-        {{d.billing|capitalize}}
-      </span>
+  <div class="text-center font-bold text-lg">{{d.name}}</div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 font-semibold text-center text-sm items-center my-1">
+    <div class="text-green-600">
+      {{d.price|format_currency}}{{d.billing|billing_label}}
     </div>
-  </div>
-
-  <div class="grid grid-cols-2 justify-items-stretch my-2">
-    <div class="justify-self-start">{{d.price|format_currency}}</div>
-    <div class="justify-self-end">
-      {% if d.active %}
-      {{d|next_payment}}
-      {% else %}
-      <span
-        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200 uppercase last:mr-0 mr-1">
-        Cancelled
-      </span>
-      {% endif %}
+    <div class="{% if d.active %}text-sky-600{% else %}text-red-600{% endif %}">
+      {% if d.active %}next: {{d|next_payment}} {% else %} last: {{d.last_subscribed_date|format_date}}{% endif %}
     </div>
   </div>
 
