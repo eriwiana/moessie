@@ -3,13 +3,11 @@ from http import HTTPStatus
 from fastapi import Request
 from fastapi.responses import HTMLResponse
 from fastapi.responses import JSONResponse
-from fastapi.templating import Jinja2Templates
 from fastapi_restful.cbv import cbv
 from fastapi_restful.inferring_router import InferringRouter
 
 from base import deta
 from base import settings
-from base import views
 from base.messages import BaseMessage
 from base.views import BaseView
 from models.subscription import SubscriptionCreate
@@ -24,9 +22,6 @@ router = InferringRouter()
 @cbv(router)
 class SubscriptionView(BaseView):
     base = deta.Base(settings.base_subscriptions_name)
-    templates = Jinja2Templates(directory="dashboard/templates")
-    templates.env.filters["next_payment"] = views.next_payment
-    templates.env.filters["format_currency"] = views.format_currency
 
     @router.get("/", response_class=HTMLResponse)
     def home(self, request: Request):
