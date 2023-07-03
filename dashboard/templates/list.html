@@ -2,21 +2,30 @@
 
 {% block contents %}
 {% for d in data %}
-<div class="border-2 border-black rounded-md p-3 shadow-[3px_3px_0px_1px_black]">
-
-  <div class="text-center font-bold text-lg">{{d.name}}</div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 font-semibold text-center text-sm items-center my-1">
-    <div class="text-green-600">
-      {{d.price|format_currency}}{{d.billing|billing_label}}
+<div class="flex-1">
+  <div class="p-6 flex flex-col bg-white gap-4 border border-black rounded-2xl shadow-[3px_3px_0px_1px_black]">
+    <div class="flex flex-col space-y-2">
+      <div class="flex items-center align-middle">
+        <h1 class="text-2xl font-bold flex-1">{{d.name}}</h1>
+        {% if d.members %}
+        <div
+          class="flex-0 flex -space-x-2 p-2 hover:bg-gray-200/50 w-fit rounded-full cursor-pointer transition ease-in-out delay-75">
+          {% include 'member.html' %}
+        </div>
+        {% endif %}
+      </div>
     </div>
-    <div class="{% if d.active %}text-sky-600{% else %}text-red-600{% endif %}">
-      {% if d.active %}next: {{d|next_payment}} {% else %} last: {{d.last_subscribed_date|format_date}}{% endif %}
+    <div class="flex flex-col gap-1">
+      <h4 class="flex-1 text-base"><b>{{d.price|format_currency}}</b>{{d.billing|billing_label}}</h4>
+      <h6 class="text-base text-gray-500">
+        {% if d.active %}
+          next: {{d|next_payment}}
+        {% else %}
+          last: {{d.last_subscribed_date|format_date}}
+        {% endif %}
+      </h6>
     </div>
   </div>
-
-  {% include 'member.html' %}
-
 </div>
 {% endfor %}
 {% endblock contents %}
