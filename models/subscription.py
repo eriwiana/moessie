@@ -6,6 +6,8 @@ from typing import Optional
 from pydantic import BaseModel
 from pydantic import Field
 
+from base.currencies import CurrencyCodeEnum
+
 
 class BillingEnum(str, Enum):
     monthly = "monthly"
@@ -14,6 +16,7 @@ class BillingEnum(str, Enum):
 
 class SubscriptionCreate(BaseModel):
     name: str
+    currency: CurrencyCodeEnum = CurrencyCodeEnum.USD
     price: float = Field(default=0.0, ge=0.0)
     billing: BillingEnum = BillingEnum.monthly
     active: bool = Field(default=True)
@@ -21,12 +24,14 @@ class SubscriptionCreate(BaseModel):
     last_subscribed_date: datetime = Field(default=None)
     member_limit: int = Field(default=1, le=6)
     members: List[str] = Field(default=[], min_items=0, max_items=6)
+    image_url: Optional[str] = Field(default=None)
     created: datetime = Field(default_factory=datetime.now)
     modified: datetime = Field(default_factory=datetime.now)
 
 
 class SubscriptionUpdate(BaseModel):
     name: Optional[str] = Field(default=None)
+    currency: Optional[CurrencyCodeEnum] = Field(default=None)
     price: Optional[float] = Field(default=None, ge=0.0)
     billing: Optional[BillingEnum] = Field(default=None)
     active: Optional[bool] = Field(default=None)
@@ -34,12 +39,14 @@ class SubscriptionUpdate(BaseModel):
     last_subscribed_date: Optional[datetime] = Field(default=None)
     member_limit: Optional[int] = Field(default=None, le=6)
     members: Optional[List[str]] = Field(default=[], min_items=0, max_items=6)
+    image_url: Optional[str] = Field(default=None)
     modified: datetime = Field(default_factory=datetime.now)
 
 
 class SubscriptionDetail(BaseModel):
     key: str
     name: str
+    currency: str
     price: float
     billing: BillingEnum
     active: bool
@@ -47,6 +54,7 @@ class SubscriptionDetail(BaseModel):
     last_subscribed_date: Optional[datetime]
     member_limit: int
     members: Optional[List[str]]
+    image_url: Optional[str]
     created: datetime
     modified: datetime
 
