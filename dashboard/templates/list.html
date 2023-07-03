@@ -5,6 +5,11 @@
 <div class="flex-1">
   <div class="p-6 flex flex-col bg-white gap-4 border border-black rounded-2xl shadow-[3px_3px_0px_1px_black]">
     <div class="flex flex-col space-y-2">
+      {% if d.image_url %}
+      <div>
+        <img src="{{d.image_url}}" class="h-6" alt="{{d.name}}"/>
+      </div>
+      {% endif %}
       <div class="flex items-center align-middle">
         <h1 class="text-2xl font-bold flex-1">{{d.name}}</h1>
         {% if d.members %}
@@ -16,7 +21,7 @@
       </div>
     </div>
     <div class="flex flex-col gap-1">
-      <h4 class="flex-1 text-base"><b>{{d.price|format_currency}}</b>{{d.billing|billing_label}}</h4>
+      <h4 class="flex-1 text-base"><b>{{d.currency}} {{d.price|format_currency}}</b>{{d.billing|billing_label}}</h4>
       <h6 class="text-base text-gray-500">
         {% if d.active %}
           next: {{d|next_payment}}
