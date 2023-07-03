@@ -1,9 +1,0 @@
-{% if d.members|length < 3 %}{% set total = 2 %}{% else %}{% set total = 3 %}{% endif %}
-{% for m in d.members[:total] %}
-  <div class="w-6 h-6 ring-2 ring-gray-100 bg-white rounded-full flex justify-center items-center z-[{{total - loop.index + 1}}]">{{m[0]|capitalize}}</div>
-{% endfor %}
-{% if total > 2 %}
-  <div class="w-6 h-6 ring-2 ring-gray-100 bg-gray-100/60 rounded-full flex justify-center items-center -z-[0]">
-    +
-  </div>
-{% endif %}
