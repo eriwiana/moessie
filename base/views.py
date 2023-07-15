@@ -48,7 +48,7 @@ def format_date(value):
 
 
 def billing_label(value):
-    return "/mo." if value == BillingEnum.monthly else "/year"
+    return "/month" if value == BillingEnum.monthly else "/year"
 
 
 class BaseView:
