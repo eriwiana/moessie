@@ -8,8 +8,10 @@ from fastapi_restful.inferring_router import InferringRouter
 
 from base import deta
 from base import settings
+from base.currencies import CurrencyCodeEnum
 from base.messages import BaseMessage
 from base.views import BaseView
+from models.subscription import BillingEnum
 from models.subscription import SubscriptionCreate
 from models.subscription import SubscriptionDetail
 from models.subscription import SubscriptionMemberCreate
@@ -17,6 +19,13 @@ from models.subscription import SubscriptionUpdate
 
 
 router = InferringRouter()
+
+form = {
+    "billings": [{"name": x.name, "value": x.value} for x in BillingEnum],
+    "currencies": [
+        {"name": x.name, "value": x.value} for x in CurrencyCodeEnum
+    ],
+}
 
 
 @cbv(router)
@@ -37,8 +46,13 @@ class SubscriptionView(BaseView):
                     _members.append(member.get("name"))
                 d["members"] = _members
 
+        result = {
+            "data": data,
+            "form": form,
+        }
+
         return self.templates.TemplateResponse(
-            name="list.html", context={"request": request, "data": data}
+            name="list.html", context={"request": request, "data": result}
         )
 
     @router.get(
