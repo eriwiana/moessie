@@ -43,7 +43,11 @@ def format_currency(value):
     return f"{value:,}"
 
 
-def format_date(value):
+def format_date(value, frmt="datepicker"):
+    if frmt == "datepicker":
+        return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S").strftime(
+            "%Y-%m-%d"
+        )
     return datetime.strptime(value, "%Y-%m-%dT%H:%M:%S").strftime("%d %B %Y")
 
 
