@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
 {% block contents %}
-{% for d in data %}
-<div class="flex flex-col cursor-pointer">
-  <div class="p-6 flex flex-1 flex-col bg-white gap-3 border-2 border-black rounded-2xl shadow-[3px_3px_0px_1px_black] justify-between">
+{% for d in data.data %}
+<div class="flex flex-col">
+  <div
+    class="p-6 flex flex-1 flex-col cursor-pointer bg-white gap-3 border-2 border-black rounded-2xl shadow-[3px_3px_0px_1px_black] justify-between"
+    onclick="modal('{{d.key}}', 'open')">
     <div class="flex flex-col space-y-2">
       {% if d.image_url %}
       <div>
@@ -17,8 +19,7 @@
     </div>
 
     {% if d.members %}
-    <div
-      class="flex flex-wrap hover:bg-gray-200/50 w-fit rounded-full transition ease-in-out delay-75">
+    <div class="flex flex-wrap hover:bg-gray-200/50 w-fit rounded-full transition ease-in-out delay-75">
       {% for m in d.members %}
       <div class="w-6 h-6 m-1 ring-2 ring-gray-100 bg-white rounded-full flex justify-center items-center">
         {{m[0]|capitalize}}</div>
@@ -30,13 +31,169 @@
       <h4 class="flex-1 text-base"><b>{{d.currency}} {{d.price|format_currency}}</b>{{d.billing|billing_label}}</h4>
       <h6 class="text-base text-gray-500">
         {% if d.active %}
-          next: {{d|next_payment}}
+        next: {{d|next_payment}}
         {% else %}
-          last: {{d.last_subscribed_date|format_date}}
+        last: {{d.last_subscribed_date|format_date}}
         {% endif %}
       </h6>
     </div>
   </div>
+
+  <!-- The dialog -->
+  <div id="dialog-{{d.key}}"
+    class="hidden fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 space-y-5 border-2 border-black rounded-2xl shadow-[3px_3px_0px_1px_black] w-full max-w-lg">
+
+    <!-- Form -->
+    <div class="w-full max-w-lg">
+      <h1 class="text-center text-xl font-bold">Detail</h1>
+
+      <hr class="my-4">
+
+      <!-- Field Name & Billing -->
+      <div class="flex flex-wrap -mx-3 mb-4">
+        <div class="w-2/3 px-3 mb-4 md:mb-0">
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="name">
+            Name
+          </label>
+          <input
+            class="appearance-none block w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:text-black focus:outline-none focus:bg-white border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+            name="name_{{d.key}}" type="text" placeholder="Spotify" value="{{d.name}}">
+        </div>
+        <div class="w-1/3 px-3 mb-4 md:mb-0">
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="active">
+            Active?
+          </label>
+          <input name="active_{{d.key}}" class="mr-2 leading-tight" type="checkbox" {% if d.active %}checked{% endif %}
+            aria-label="active_{{d.key}}">
+        </div>
+      </div>
+
+      <!-- Field: Currency, Price, Active -->
+      <div class="flex flex-wrap -mx-3 mb-4">
+        <div class="w-1/3 px-3 mb-4 md:mb-0">
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="currency">
+            Currency
+          </label>
+          <div class="relative">
+            <select
+              class="block appearance-none w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:outline-none focus:bg-white focus:text-black border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              name="currency_{{d.key}}" aria-label="currency_{{d.key}}">
+              {% for f in data.form.currencies %}
+              <option value="{{f.value}}" name="{{f.name}}" {% if d.currency==f.value %}selected{% endif %}>
+                {{f.value|upper}}</option>
+              {% endfor %}
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="w-1/3 px-3 mb-6 md:mb-0">
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="price">
+            Price
+          </label>
+          <input
+            class="appearance-none block w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:outline-none focus:bg-white focus:text-black border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+            name="price_{{d.key}}" type="number" placeholder="100" value="{{d.price}}">
+        </div>
+        <div class="w-1/3 px-3 mb-6 md:mb-0">
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="billing">
+            Billing
+          </label>
+          <div class="relative">
+            <select
+              class="block appearance-none w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:text-black focus:outline-none focus:bg-white border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              name="billing_{{d.key}}" aria-label="billing_{{d.key}}">
+              {% for f in data.form.billings %}
+              <option value="{{f.value}}" name="{{f.name}}" {% if d.billing==f.value %}selected{% endif %}>
+                {{f.value|capitalize}}</option>
+              {% endfor %}
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center p-2 text-gray-500">
+              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Field: Renewal & Last Subscribed Dates -->
+      <div class="flex flex-wrap -mx-3 mb-4">
+        <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="renewal_date">
+            Renewal Date
+          </label>
+          <input name="renewal_date_{{d.key}}" type="date" value="{{d.renewal_date|format_date('datepicker')}}"
+            class="w-full p-2 bg-gray-200/50 text-gray-500 focus:text-black focus:bg-white focus:outline-none border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]">
+        </div>
+        <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0" {% if d.active %}hidden{% endif %}>
+          <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="last_subscribed_date">
+            Last Subscribed Date
+          </label>
+          <input name="last_subscribed_date_{{d.key}}" type="date"
+            value="{% if d.last_subscribed_date %}{{d.last_subscribed_date|format_date('datepicker')}}{% endif %}"
+            class="w-full p-2 bg-gray-200/50 text-gray-500 focus:text-black focus:bg-white focus:outline-none border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]">
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Buttons -->
+      <div class="flex flex-wrap -mx-3 m-4">
+        <div class="w-full md:w-1/2 px-3 mb-2 md:mb-0">
+          <button name="update"
+            class="w-full p-2 text-emerald-950 font-bold bg-emerald-400 focus:bg-yellow-400 cursor-pointer border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]">
+            Update
+            <i class="fa fa-pencil"></i>
+          </button>
+        </div>
+        <div class="w-full md:w-1/2 px-3 mb-2 md:mb-0">
+          <button name="cancel"
+            class="w-full p-2 text-gray-500 font-bold bg-gray-200/50 focus:text-black cursor-pointer border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+            onclick="modal('{{d.key}}')">
+            Cancel
+            <i class="fa fa-ban"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endfor %}
+<!-- Overlay element -->
+<div id="overlay" class="fixed hidden z-40 w-screen h-screen inset-0 bg-gray-900 bg-opacity-60 backdrop-blur-md"></div>
 {% endblock contents %}
+
+{% block scripts %}
+{{ super() }}
+
+<script>
+  let modalId = null;
+  let dialog = null;
+  let overlay = document.getElementById('overlay');
+
+  function modal(id, state = 'close') {
+    modalId = id;
+    dialog = document.getElementById(`dialog-${modalId}`);
+
+    if (state === 'open') {
+      dialog.classList.remove('hidden');
+      overlay.classList.remove('hidden');
+    } else {
+      dialog.classList.add('hidden');
+      overlay.classList.add('hidden');
+    }
+  };
+
+  overlay.addEventListener('click', function () {
+    dialog = document.getElementById(`dialog-${modalId}`);
+
+    dialog.classList.add('hidden');
+    overlay.classList.add('hidden');
+
+  });
+</script>
+{% endblock %}
