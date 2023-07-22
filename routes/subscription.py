@@ -35,17 +35,21 @@ class SubscriptionView(BaseView):
     @router.get("/", response_class=HTMLResponse)
     def home(self, request: Request):
         data = self.get(request)
+        member_base = deta.Base(settings.base_members_name)
 
         for d in data:
             members = d.get("members", [])
             if members:
-                member_base = deta.Base(settings.base_members_name)
                 _members = []
                 for k in members:
                     member = member_base.get(k)
                     _members.append(member.get("name"))
                 d["members"] = _members
 
+        form["members"] = [
+            {"key": m.get("key"), "name": m.get("name")}
+            for m in member_base.fetch().items
+        ]
         result = {
             "data": data,
             "form": form,
