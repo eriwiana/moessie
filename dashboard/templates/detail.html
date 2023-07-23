@@ -1,0 +1,205 @@
+<!-- The dialog -->
+<div data-te-modal-init
+  class="fixed left-0 top-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none" id="{{d.key}}"
+  tabindex="-1" aria-labelledby="{{d.key}}" aria-modal="true" role="dialog">
+  <div data-te-modal-dialog-ref
+    class="pointer-events-none relative flex bg-white min-h-[calc(100%-1rem)] w-auto translate-y-[-50px] items-center opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:min-h-[calc(100%-3.5rem)] min-[576px]:max-w-[500px] p-6 border-2 border-black rounded-2xl shadow-[3px_3px_0px_1px_black]">
+    <div
+      class="pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current outline-none">
+      <div
+        class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 border-opacity-100 pt-4 pb-4">
+        <!--Modal title-->
+        <h5 class="text-xl font-bold leading-normal" id="{{d.key}}Label">
+          Detail
+        </h5>
+        <!--Close button-->
+        <button type="button"
+          class="box-content rounded-none border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
+          data-te-modal-dismiss aria-label="Close">
+          <i class="fa fa-ban"></i>
+        </button>
+      </div>
+
+      <!--Modal body-->
+      <div class="relative pt-4 pb-4">
+        <!-- Field Name & Billing -->
+        <div class="flex flex-wrap -mx-3 mb-4">
+          <div class="w-3/4 px-3 mb-4 md:mb-0">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="name">
+              Name
+            </label>
+            <input
+              class="appearance-none block w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:text-black focus:outline-none focus:bg-white border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              name="name_{{d.key}}" type="text" placeholder="Spotify" value="{{d.name}}">
+          </div>
+          <div class="w-1/4 px-3 mb-4 md:mb-0">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="active">
+              Active?
+            </label>
+            <input name="active_{{d.key}}" class="mr-2 leading-tight" type="checkbox" {% if d.active %}checked{% endif
+              %} aria-label="active_{{d.key}}">
+          </div>
+        </div>
+
+        <!-- Field: Image URL -->
+        <div class="flex flex-wrap -mx-3 mb-4">
+          <div class="w-full px-3 mb-4 md:mb-0">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="image_url">
+              Image URL
+            </label>
+            <input
+              class="appearance-none block w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:text-black focus:outline-none focus:bg-white border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              name="image_url_{{d.key}}" type="text" placeholder="https://mysite.com/images/my_image.png"
+              value="{{d.image_url}}">
+          </div>
+        </div>
+
+        <!-- Field: Currency, Price, Active, Member Limit -->
+        <div class="flex flex-wrap -mx-3 mb-4">
+          <div class="w-1/2 md:w-1/4 px-3 mb-4 md:mb-4">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="currency">
+              Currency
+            </label>
+            <div class="relative">
+              <select
+                class="block appearance-none w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:outline-none focus:bg-white focus:text-black border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+                name="currency_{{d.key}}" aria-label="currency_{{d.key}}">
+                {% for f in data.form.currencies %}
+                <option value="{{f.value}}" name="{{f.name}}" {% if d.currency==f.value %}selected{% endif %}>
+                  {{f.value|upper}}</option>
+                {% endfor %}
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="w-1/2 md:w-1/4 px-3 mb-6 md:mb-4">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="price">
+              Price
+            </label>
+            <input
+              class="appearance-none block w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:outline-none focus:bg-white focus:text-black border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              name="price_{{d.key}}" type="number" placeholder="100" value="{{d.price}}">
+          </div>
+          <div class="w-1/2 md:w-1/4 px-3 mb-6 md:mb-4">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="billing">
+              Billing
+            </label>
+            <div class="relative">
+              <select
+                class="block appearance-none w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:text-black focus:outline-none focus:bg-white border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+                name="billing_{{d.key}}" aria-label="billing_{{d.key}}">
+                {% for f in data.form.billings %}
+                <option value="{{f.value}}" name="{{f.name}}" {% if d.billing==f.value %}selected{% endif %}>
+                  {{f.value|capitalize}}</option>
+                {% endfor %}
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center p-2 text-gray-500">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="w-1/2 md:w-1/4 px-3 mb-4 md:mb-4">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="member_limit">
+              <abbr title="Member Limit">Limit</abbr>
+            </label>
+            <input name="member_limit_{{d.key}}" type="number" value="{{d.member_limit}}" min="1" max="6"
+              class="appearance-none block w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:outline-none focus:bg-white focus:text-black border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              aria-label="member_limit_{{d.key}}">
+          </div>
+        </div>
+
+        <!-- Field: Renewal & Last Subscribed Dates -->
+        <div class="flex flex-wrap -mx-3 mb-4">
+          <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="renewal_date">
+              Renewal Date
+            </label>
+            <input name="renewal_date_{{d.key}}" type="date" value="{{d.renewal_date|format_date('datepicker')}}"
+              class="w-full p-2 bg-gray-200/50 text-gray-500 focus:text-black focus:bg-white focus:outline-none border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              aria-label="renewal_date_{{d.key}}">
+          </div>
+          <div class="w-full md:w-1/2 px-3 mb-4 md:mb-0" {% if d.active %}hidden{% endif %}>
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="last_subscribed_date">
+              Last Subscribed Date
+            </label>
+            <input name="last_subscribed_date_{{d.key}}" type="date"
+              value="{% if d.last_subscribed_date %}{{d.last_subscribed_date|format_date('datepicker')}}{% endif %}"
+              class="w-full p-2 bg-gray-200/50 text-gray-500 focus:text-black focus:bg-white focus:outline-none border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+              aria-label="last_subscribed_date_{{d.key}}">
+          </div>
+        </div>
+
+        <!-- Field: Members -->
+        <div class="flex flex-wrap -mx-3 mb-4">
+          <div class="w-full px-3 mb-4 md:mb-0">
+            <label class="uppercase block tracking-wide text-xs font-bold mb-2" for="members">
+              Members
+            </label>
+            <div class="relative">
+              <div
+                class="flex flex-auto flex-wrap my-3 p-1 border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]">
+                {% if members %}
+                {% for m in members %}
+                <div
+                  class="flex justify-center items-center m-1 font-medium py-1 px-2 rounded-full border border-black">
+                  <div class="text-xs font-normal leading-none max-w-full flex-initial">{{m|title}}</div>
+                  <div class="flex flex-auto flex-row-reverse">
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="feather feather-x text-gray-700 hover:text-black cursor-pointer rounded-full w-4 h-4 ml-2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <div class="flex-1">
+                  <input name="new_member_name" placeholder=""
+                    class="p-1 px-2 appearance-none outline-none h-full w-full {% if d.member_limit == 1 %}bg-gray-200/50{% endif %}"
+                    {% if d.member_limit==1 %}disabled{% endif %} aria-label="new_member_{{d.key}}">
+                </div>
+              </div>
+              <select
+                class="block appearance-none w-full bg-gray-200/50 text-gray-500 p-2 leading-tight focus:text-black focus:outline-none focus:bg-white border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+                name="members_{{d.key}}" aria-label="members_{{d.key}}" multiple {% if d.member_limit==1 %}disabled{%
+                endif %}>
+                {% for f in data.form.members %}
+                <option value="{{f.key}}" name="{{f.name}}" {% if f.name in members %}selected{% endif %}>
+                  {{f.name|title}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Modal footer-->
+      <div class="flex gap-3 pt-4 items-center border-t-2 border-neutral-100 border-opacity-100">
+        <div class="w-full md:w-1/2">
+          <button name="update"
+            class="w-full p-2 text-emerald-950 font-bold bg-emerald-400 focus:bg-yellow-400 cursor-pointer border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]">
+            Update
+            <i class="fa fa-pencil"></i>
+          </button>
+        </div>
+        <div class="w-full md:w-1/2">
+          <button name="cancel"
+            class="w-full p-2 text-gray-500 font-bold bg-white focus:bg-gray-200/50 focus:text-black cursor-pointer border-2 border-black rounded-lg shadow-[3px_3px_0px_1px_black]"
+            data-te-modal-dismiss>
+            Cancel
+            <i class="fa fa-ban"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
